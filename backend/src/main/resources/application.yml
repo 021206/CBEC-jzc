@@ -13,3 +13,8 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  secret: CBEC2026SecretKeyForJWTTokenGenerationMustBeLongEnough
+  expiration: 7200000       # 2小时（毫秒）
+  refreshExpiration: 604800000  # 7天（毫秒）
