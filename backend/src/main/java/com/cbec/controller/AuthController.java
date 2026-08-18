@@ -6,13 +6,18 @@ import com.cbec.common.utils.JwtUtils;
 import com.cbec.common.utils.PasswordEncoder;
 import com.cbec.entity.SysUser;
 import com.cbec.mapper.SysUserMapper;
+import com.cbec.entity.SysMenu;
+import com.cbec.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @RestController
 public class AuthController {
@@ -25,6 +30,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private SysMenuService sysMenuService;
 
     @PostMapping("/auth/login")
     public Result<Map<String, Object>> login(
@@ -61,4 +69,24 @@ public class AuthController {
 
         return Result.success(data);
     }
+    /**
+     * 获取当前登录用户的菜单树
+     */
+    @GetMapping("/auth/menus")
+    public Result<List<SysMenu>> getMenus(@RequestHeader("Authorization") String authorization) {
+        // 1. 从请求头中提取 Token（格式：Bearer xxx）
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new BusinessException("未登录或Token格式错误");
+        }
+        String token = authorization.substring(7);
+
+        // 2. 解析 Token 获取用户 ID
+        Long userId = jwtUtils.getUserIdFromToken(token);
+
+        // 3. 查询菜单树
+        List<SysMenu> menuTree = sysMenuService.getMenuTreeByUserId(userId);
+
+        return Result.success(menuTree);
+    }
 }
+
