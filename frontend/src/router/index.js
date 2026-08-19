@@ -9,7 +9,9 @@ const routes = [
         component: Layout,
         redirect: '/inventory/stock',
         children: [
-            { path: 'inventory/stock', component: () => import('../views/inventory/Stock.vue') }
+            { path: 'inventory/stock', component: () => import('../views/inventory/Stock.vue') },
+            { path: 'warehouse', component: () => import('../views/warehouse/index.vue') },
+            { path: 'inventory/warehouse', component: () => import('../views/warehouse/index.vue') }
         ]
     }
 ];
