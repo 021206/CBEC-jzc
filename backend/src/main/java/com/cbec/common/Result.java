@@ -52,7 +52,7 @@ public class Result<T> {
         return result;
     }
 
-    // ============ 链式设置 traceId（后面会用） ============
+    // ============ 链式设置 traceId ============
     public Result<T> withTraceId(String traceId) {
         this.traceId = traceId;
         return this;
