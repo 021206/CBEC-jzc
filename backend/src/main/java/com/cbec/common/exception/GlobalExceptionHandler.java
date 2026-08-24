@@ -9,6 +9,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -73,5 +75,40 @@ public class GlobalExceptionHandler {
         }
         log.error("系统异常 | traceId: {} | 异常类型: {} | msg: {}", traceId, e.getClass().getSimpleName(), e.getMessage(), e);
         return Result.error(ResultCode.SYSTEM_ERROR.getCode(), ResultCode.SYSTEM_ERROR.getMsg()).withTraceId(traceId);
+    }
+    /**
+     * 处理请求方法不匹配异常（如用 POST 访问 GET 接口）
+     */
+    /**
+     * 处理请求方法不匹配异常（如用 POST 访问 GET 接口）
+     */
+    /**
+     * 处理请求方法不匹配异常（如用 POST 访问 GET 接口）
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result<?> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        String traceId = MDC.get("traceId");
+        if (traceId == null) {
+            traceId = UUID.randomUUID().toString().replace("-", "");
+        }
+        log.error("请求方法不匹配 | traceId: {} | 实际方法: {} | 支持的方法: {}",
+                traceId, e.getMethod(), String.join(", ", e.getSupportedMethods()));
+        return Result.error(405, "请求方法不支持，请检查使用正确的HTTP方法（" + String.join(", ", e.getSupportedMethods()) + "）")
+                .withTraceId(traceId);
+    }
+
+    /**
+     * 处理 Content-Type 不匹配异常（如用表单提交访问 JSON 接口）
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public Result<?> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
+        String traceId = MDC.get("traceId");
+        if (traceId == null) {
+            traceId = UUID.randomUUID().toString().replace("-", "");
+        }
+        log.error("Content-Type 不匹配 | traceId: {} | 实际: {} | 支持: {}",
+                traceId, e.getContentType(), e.getSupportedMediaTypes());
+        return Result.error(415, "请求的 Content-Type 不支持，请使用 application/json")
+                .withTraceId(traceId);
     }
 }

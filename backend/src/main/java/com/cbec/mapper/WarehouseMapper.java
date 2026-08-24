@@ -22,7 +22,7 @@ public interface WarehouseMapper {
     Warehouse selectById(@Param("id") Long id);
 
     // 分页查询（关键字模糊搜索）
-    @Select("SELECT * FROM warehouse WHERE name LIKE CONCAT('%', #{keyword}, '%') ORDER BY id DESC LIMIT #{offset}, #{limit}")
+    @Select("SELECT * FROM warehouse WHERE name LIKE CONCAT('%', #{keyword}, '%') ORDER BY id ASC LIMIT #{offset}, #{limit}")
     List<Warehouse> selectPage(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
 
     // 查询总条数（用于分页）
@@ -30,6 +30,6 @@ public interface WarehouseMapper {
     int count(@Param("keyword") String keyword);
 
     // 查询所有启用的仓库（给下拉框用）
-    @Select("SELECT * FROM warehouse WHERE status = 1 ORDER BY id DESC")
+    @Select("SELECT * FROM warehouse WHERE status = 1 ORDER BY id ASC")
     List<Warehouse> selectAllEnabled();
 }
