@@ -1,20 +1,3 @@
-server:
-  port: 8080
-
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/cbec?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-jwt:
-  secret: CBEC2026SecretKeyForJWTTokenGenerationMustBeLongEnough
-  expiration: 7200000       # 2小时（毫秒）
-  refreshExpiration: 604800000  # 7天（毫秒）
+  profiles:
+    active: dev
