@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: cbec-backend
+  cloud:
+    nacos:
+      config:
+        # 关键：先关闭Nacos连接，这样项目启动不会报错
+        enabled: false
+        # 下面这些是预填的配置信息，等以后安装Nacos后，再把上面的false改成true
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        namespace: dev
+  profiles:
+    active: dev

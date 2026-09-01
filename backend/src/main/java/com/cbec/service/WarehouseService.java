@@ -17,6 +17,13 @@ public class WarehouseService {
     private WarehouseMapper warehouseMapper;
 
     public Warehouse add(Warehouse warehouse) {
+        if (warehouse.getName() == null || warehouse.getName().isEmpty()) {
+            throw new BusinessException("仓库名称不能为空");
+        }
+        // 如果 status 为空，默认为 1（启用）
+        if (warehouse.getStatus() == null) {
+            warehouse.setStatus(1);
+        }
         warehouseMapper.insert(warehouse);
         return warehouse;
     }
