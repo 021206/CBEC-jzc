@@ -1,6 +1,6 @@
 package com.cbec.mapper;
 
-import com.cbec.entity.Warehouse;
+import com.cbec.entity.warehouse.Warehouse;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package com.cbec.controller;
 
 import com.cbec.common.Result;
 import com.cbec.common.exception.BusinessException;
-import com.cbec.entity.Warehouse;
+import com.cbec.entity.warehouse.Warehouse;
 import com.cbec.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

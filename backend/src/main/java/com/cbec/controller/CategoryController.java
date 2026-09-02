@@ -2,7 +2,7 @@ package com.cbec.controller;
 
 import com.cbec.common.Result;
 import com.cbec.common.exception.BusinessException;
-import com.cbec.entity.Category;
+import com.cbec.entity.product.Category;
 import com.cbec.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
