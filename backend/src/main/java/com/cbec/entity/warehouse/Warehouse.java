@@ -1,4 +1,4 @@
-package com.cbec.entity;
+package com.cbec.entity.warehouse;
 
 import lombok.Data;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.cbec.service;
 
-import com.cbec.entity.Warehouse;
+import com.cbec.entity.warehouse.Warehouse;
 import com.cbec.mapper.WarehouseMapper;
 import com.cbec.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;

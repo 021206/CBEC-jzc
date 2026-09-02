@@ -1,6 +1,6 @@
 package com.cbec.service;
 
-import com.cbec.entity.SysMenu;
+import com.cbec.entity.auth.SysMenu;
 import com.cbec.mapper.SysMenuMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

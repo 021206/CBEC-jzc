@@ -1,4 +1,4 @@
-package com.cbec.entity;
+package com.cbec.entity.auth;
 
 import lombok.Data;
 import java.util.List;

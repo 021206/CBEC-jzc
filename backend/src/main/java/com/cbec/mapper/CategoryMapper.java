@@ -1,6 +1,6 @@
 package com.cbec.mapper;
 
-import com.cbec.entity.Category;
+import com.cbec.entity.product.Category;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

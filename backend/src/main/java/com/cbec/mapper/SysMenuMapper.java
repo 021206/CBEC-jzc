@@ -1,6 +1,6 @@
 package com.cbec.mapper;
 
-import com.cbec.entity.SysMenu;
+import com.cbec.entity.auth.SysMenu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
