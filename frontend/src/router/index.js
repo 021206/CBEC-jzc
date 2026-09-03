@@ -12,7 +12,13 @@ const routes = [
             { path: 'inventory/stock', component: () => import('../views/inventory/Stock.vue') },
             { path: 'warehouse', component: () => import('../views/warehouse/index.vue') },
             { path: 'inventory/warehouse', component: () => import('../views/warehouse/index.vue') },
-            { path: 'product', component: () => import('@/views/product/index.vue') }
+            { path: 'product', component: () => import('@/views/product/index.vue') },
+            { path: 'inventory/stock', component: () => import('@/views/inventory/Stock.vue') },
+            { path: 'inventory/inbound', component: () => import('@/views/inbound/index.vue') },
+// 入库创建（后续实现）
+           // { path: 'inbound/create', component: () => import('@/views/inbound/create.vue') },
+// 入库详情（后续实现）
+           // { path: 'inbound/detail/:id', component: () => import('@/views/inbound/detail.vue') },
         ]
     }
 ];
