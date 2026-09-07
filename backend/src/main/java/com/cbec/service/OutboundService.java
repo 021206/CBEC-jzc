@@ -100,7 +100,12 @@ public class OutboundService {
     }
 
     public OutboundOrder getById(Long id) {
-        return outboundOrderMapper.selectById(id);
+        OutboundOrder order = outboundOrderMapper.selectById(id);
+        if (order != null) {
+            List<OutboundItem> items = outboundItemMapper.selectByOutboundId(id);
+            order.setItems(items);
+        }
+        return order;
     }
 
     public List<OutboundOrder> listAll() {

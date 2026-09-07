@@ -1,27 +1,50 @@
 package com.cbec.service;
 
-import com.cbec.entity.inventory.Inventory;
-import com.cbec.mapper.InventoryMapper;
 import com.cbec.common.exception.BusinessException;
+import com.cbec.entity.inventory.Inventory;
+import com.cbec.entity.inventory.InventoryLog;
+import com.cbec.entity.product.Product;
+import com.cbec.entity.warehouse.Warehouse;
+import com.cbec.mapper.InventoryLogMapper;
+import com.cbec.mapper.InventoryMapper;
+import com.cbec.mapper.ProductMapper;
+import com.cbec.mapper.WarehouseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.cbec.entity.inventory.InventoryLog;
-import com.cbec.mapper.InventoryLogMapper;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class InventoryService {
 
     @Autowired
     private InventoryMapper inventoryMapper;
+
     @Autowired
     private InventoryLogMapper inventoryLogMapper;
 
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private WarehouseMapper warehouseMapper;
+
     /**
-     * 查询库存（按商品+仓库）
+     * 查询库存（按商品+仓库），返回完整对象
      */
     public Inventory getByProductAndWarehouse(Long productId, Long warehouseId) {
         return inventoryMapper.findByProductAndWarehouse(productId, warehouseId);
+    }
+
+    /**
+     * 查询库存数量（按商品+仓库），只返回数量
+     */
+    public int getStock(Long productId, Long warehouseId) {
+        Inventory inventory = getByProductAndWarehouse(productId, warehouseId);
+        return inventory == null ? 0 : inventory.getQuantity();
     }
 
     /**
@@ -36,7 +59,7 @@ public class InventoryService {
 
         Inventory inventory = inventoryMapper.findByProductAndWarehouse(productId, warehouseId);
         int beforeQty = 0;
-        Long inventoryId = null;
+        Long inventoryId;
 
         if (inventory == null) {
             // 新增库存记录
@@ -114,11 +137,35 @@ public class InventoryService {
         log.setRemark("出库审核通过");
         inventoryLogMapper.insert(log);
     }
+
     /**
-     * 查询库存数量（按商品+仓库）
+     * 分页查询库存列表（带商品名称和仓库名称）
      */
-    public int getStock(Long productId, Long warehouseId) {
-        Inventory inventory = inventoryMapper.findByProductAndWarehouse(productId, warehouseId);
-        return inventory == null ? 0 : inventory.getQuantity();
+    public Map<String, Object> list(Long productId, Long warehouseId, Integer pageNum, Integer pageSize) {
+        if (pageNum == null || pageNum < 1) pageNum = 1;
+        if (pageSize == null || pageSize < 1) pageSize = 10;
+
+        int offset = (pageNum - 1) * pageSize;
+        List<Inventory> list = inventoryMapper.selectPage(productId, warehouseId, offset, pageSize);
+        int total = inventoryMapper.count(productId, warehouseId);
+
+        // 填充商品名称和仓库名称
+        for (Inventory inv : list) {
+            if (inv.getProductId() != null) {
+                Product product = productMapper.selectById(inv.getProductId());
+                inv.setProductName(product != null ? product.getName() : null);
+            }
+            if (inv.getWarehouseId() != null) {
+                Warehouse warehouse = warehouseMapper.selectById(inv.getWarehouseId());
+                inv.setWarehouseName(warehouse != null ? warehouse.getName() : null);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        result.put("total", total);
+        result.put("pageNum", pageNum);
+        result.put("pageSize", pageSize);
+        return result;
     }
 }

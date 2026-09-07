@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-// 查询库存（按商品+仓库）
+// 查询单条库存（已有）
 export const getInventoryByProductAndWarehouse = (productId, warehouseId) => {
     return request({
         url: `/inventory/${productId}/${warehouseId}`,
@@ -8,7 +8,7 @@ export const getInventoryByProductAndWarehouse = (productId, warehouseId) => {
     });
 };
 
-// 查询所有库存（后续补充分页接口）
+// 分页查询库存列表（新增）
 export const getInventoryList = (params) => {
     return request({
         url: '/inventory/list',
