@@ -12,4 +12,6 @@ public class Inventory {
     private Integer version;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private String productName;
+    private String warehouseName;
 }

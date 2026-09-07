@@ -1,8 +1,8 @@
 <template>
   <div>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>入库单管理</h2>
-      <el-button type="primary" @click="goToCreate">新建入库单</el-button>
+      <h2>出库单管理</h2>
+      <el-button type="primary" @click="goToCreate">新建出库单</el-button>
     </div>
 
     <!-- 搜索/筛选 -->
@@ -24,9 +24,13 @@
     <!-- 表格 -->
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="orderNo" label="入库单号" width="180" />
+      <el-table-column prop="orderNo" label="出库单号" width="180" />
       <el-table-column prop="warehouseId" label="仓库ID" width="100" />
-      <el-table-column prop="supplier" label="供应商" />
+      <el-table-column prop="outboundType" label="出库类型" width="120">
+        <template #default="{ row }">
+          {{ row.outboundType === 1 ? '订单发货' : '调拨出库' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="120">
         <template #default="{ row }">
           <el-tag :type="statusMap[row.status]?.type || 'info'">
@@ -66,28 +70,28 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
-import {ElMessage} from 'element-plus';
-import {getInboundOrderList, submitInboundAudit} from '@/api/inbound.js';
+import { ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { getOutboundOrderList, submitOutboundAudit } from '@/api/outbound.js';
 
 const router = useRouter();
 
 const statusMap = {
-  1: {label: '草稿', type: 'info'},
-  2: {label: '待审核', type: 'warning'},
-  3: {label: '已完成', type: 'success'},
-  4: {label: '驳回', type: 'danger'}
+  1: { label: '草稿', type: 'info' },
+  2: { label: '待审核', type: 'warning' },
+  3: { label: '已完成', type: 'success' },
+  4: { label: '驳回', type: 'danger' }
 };
 
-const searchForm = reactive({status: null});
+const searchForm = reactive({ status: null });
 const tableData = ref([]);
 const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
 
 const loadData = async () => {
-  const res = await getInboundOrderList();
+  const res = await getOutboundOrderList();
   if (res.code === 200) {
     let list = res.data || [];
     if (searchForm.status) {
@@ -105,16 +109,16 @@ const resetSearch = () => {
 };
 
 const viewDetail = (id) => {
-  router.push(`/inventory/inbound/detail/${id}`);
+  router.push(`/inventory/outbound/detail/${id}`);
 };
 
 const goToCreate = () => {
-  router.push('/inventory/inbound/create');
+  router.push('/inventory/outbound/create');
 };
 
 const handleSubmit = async (id) => {
   try {
-    const res = await submitInboundAudit(id);
+    const res = await submitOutboundAudit(id);
     if (res.code === 200) {
       ElMessage.success('提交审核成功');
       loadData();

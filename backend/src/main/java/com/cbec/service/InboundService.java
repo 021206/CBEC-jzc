@@ -110,7 +110,12 @@ public class InboundService {
     }
 
     public InboundOrder getById(Long id) {
-        return inboundOrderMapper.selectById(id);
+        InboundOrder order = inboundOrderMapper.selectById(id);
+        if (order != null) {
+            List<InboundItem> items = inboundItemMapper.selectByInboundId(id);
+            order.setItems(items);
+        }
+        return order;
     }
 
     public List<InboundOrder> listAll() {

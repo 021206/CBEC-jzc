@@ -61,9 +61,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { getAllProducts } from '@/api/product.js';
-import { getAllWarehouses } from '@/api/warehouse.js';
+import {ref, reactive, onMounted} from 'vue';
+import {ElMessage} from 'element-plus';
+import {getAllProducts} from '@/api/product.js';
+import {getAllWarehouses} from '@/api/warehouse.js';
+import {getInventoryList} from '@/api/inventory.js';
 
 // 商品和仓库下拉选项
 const productList = ref([]);
@@ -81,23 +83,37 @@ const pageSize = ref(10);
 
 // 加载下拉数据
 const loadOptions = async () => {
-  const [products, warehouses] = await Promise.all([
-    getAllProducts(),
-    getAllWarehouses()
-  ]);
-  if (products.code === 200) productList.value = products.data || [];
-  if (warehouses.code === 200) warehouseList.value = warehouses.data || [];
+  try {
+    const [products, warehouses] = await Promise.all([
+      getAllProducts(),
+      getAllWarehouses()
+    ]);
+    if (products.code === 200) productList.value = products.data || [];
+    if (warehouses.code === 200) warehouseList.value = warehouses.data || [];
+  } catch (error) {
+    console.error('加载下拉数据失败', error);
+  }
 };
 
 // 加载库存数据
 const loadData = async () => {
-  // 这里调用后端库存列表接口（目前后端还没有实现 /inventory/list，先模拟）
-  // 实际开发时需要后端提供分页查询接口
-  // 目前先用占位数据，后续补充
-  console.log('查询条件:', searchForm);
-  // TODO: 等后端接口就绪后替换为真实调用
-  // const res = await getInventoryList({ ...searchForm, pageNum: pageNum.value, pageSize: pageSize.value });
-  // if (res.code === 200) { tableData.value = res.data.list; total.value = res.data.total; }
+  try {
+    const res = await getInventoryList({
+      productId: searchForm.productId,
+      warehouseId: searchForm.warehouseId,
+      pageNum: pageNum.value,
+      pageSize: pageSize.value
+    });
+    if (res.code === 200) {
+      tableData.value = res.data.list || [];
+      total.value = res.data.total || 0;
+    } else {
+      ElMessage.error(res.msg || '加载库存列表失败');
+    }
+  } catch (error) {
+    console.error('加载库存列表失败', error);
+    ElMessage.error('网络异常，请稍后重试');
+  }
 };
 
 const resetSearch = () => {

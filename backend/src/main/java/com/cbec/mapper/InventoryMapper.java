@@ -2,6 +2,7 @@ package com.cbec.mapper;
 
 import com.cbec.entity.inventory.Inventory;
 import org.apache.ibatis.annotations.*;
+import java.util.List;
 
 @Mapper
 public interface InventoryMapper {
@@ -24,10 +25,31 @@ public interface InventoryMapper {
     @Select("SELECT * FROM inventory WHERE product_id = #{productId}")
     Inventory findByProductId(@Param("productId") Long productId);
 
-    // 库存预警功能暂不实现，后续补充
+    // 库存预警功能暂不实现
     // @Select("SELECT ...")
     // List<Map<String, Object>> findWarningList();
 
     @Select("SELECT * FROM inventory WHERE id = #{id}")
     Inventory selectById(@Param("id") Long id);
+
+    /**
+     * 分页查询库存列表（支持按商品和仓库筛选）
+     */
+    @Select("SELECT * FROM inventory " +
+            "WHERE (#{productId} IS NULL OR product_id = #{productId}) " +
+            "AND (#{warehouseId} IS NULL OR warehouse_id = #{warehouseId}) " +
+            "ORDER BY id DESC LIMIT #{offset}, #{limit}")
+    List<Inventory> selectPage(@Param("productId") Long productId,
+                               @Param("warehouseId") Long warehouseId,
+                               @Param("offset") int offset,
+                               @Param("limit") int limit);
+
+    /**
+     * 统计库存总数（用于分页）
+     */
+    @Select("SELECT COUNT(*) FROM inventory " +
+            "WHERE (#{productId} IS NULL OR product_id = #{productId}) " +
+            "AND (#{warehouseId} IS NULL OR warehouse_id = #{warehouseId})")
+    int count(@Param("productId") Long productId,
+              @Param("warehouseId") Long warehouseId);
 }
