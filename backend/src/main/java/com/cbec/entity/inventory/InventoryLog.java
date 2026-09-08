@@ -15,7 +15,11 @@ public class InventoryLog {
     private String remark;
     private LocalDateTime createTime;
 
-    // ========== 以下是 getter 和 setter，必须全部存在 ==========
+    // ========== 非数据库字段（用于显示关联名称） ==========
+    private String productName;
+    private String warehouseName;
+
+    // ========== getter/setter ==========
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -48,4 +52,10 @@ public class InventoryLog {
 
     public LocalDateTime getCreateTime() { return createTime; }
     public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+
+    public String getWarehouseName() { return warehouseName; }
+    public void setWarehouseName(String warehouseName) { this.warehouseName = warehouseName; }
 }

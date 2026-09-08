@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ public class InventoryService {
 
     @Autowired
     private WarehouseMapper warehouseMapper;
+
+
 
     /**
      * 查询库存（按商品+仓库），返回完整对象
@@ -138,6 +141,38 @@ public class InventoryService {
         inventoryLogMapper.insert(log);
     }
 
+    /**
+     * 分页查询库存流水
+     */
+    public Map<String, Object> listLogs(Long productId, Long warehouseId, Integer changeType,
+                                        String startTime, String endTime,
+                                        Integer pageNum, Integer pageSize) {
+        if (pageNum == null || pageNum < 1) pageNum = 1;
+        if (pageSize == null || pageSize < 1) pageSize = 10;
+
+        int offset = (pageNum - 1) * pageSize;
+        List<InventoryLog> list = inventoryLogMapper.selectPage(productId, warehouseId, changeType, startTime, endTime, offset, pageSize);
+        int total = inventoryLogMapper.count(productId, warehouseId, changeType, startTime, endTime);
+
+        // 填充商品名称和仓库名称
+        for (InventoryLog log : list) {
+            if (log.getProductId() != null) {
+                Product product = productMapper.selectById(log.getProductId());
+                log.setProductName(product != null ? product.getName() : null);
+            }
+            if (log.getWarehouseId() != null) {
+                Warehouse warehouse = warehouseMapper.selectById(log.getWarehouseId());
+                log.setWarehouseName(warehouse != null ? warehouse.getName() : null);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        result.put("total", total);
+        result.put("pageNum", pageNum);
+        result.put("pageSize", pageSize);
+        return result;
+    }
     /**
      * 分页查询库存列表（带商品名称和仓库名称）
      */

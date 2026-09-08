@@ -3,6 +3,7 @@ package com.cbec.mapper;
 import com.cbec.entity.inventory.Inventory;
 import org.apache.ibatis.annotations.*;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface InventoryMapper {
@@ -52,4 +53,11 @@ public interface InventoryMapper {
             "AND (#{warehouseId} IS NULL OR warehouse_id = #{warehouseId})")
     int count(@Param("productId") Long productId,
               @Param("warehouseId") Long warehouseId);
+
+    @Select("SELECT i.product_id, p.name as productName, i.warehouse_id, w.name as warehouseName, i.quantity, p.warning_threshold " +
+            "FROM inventory i " +
+            "LEFT JOIN product p ON i.product_id = p.id " +
+            "LEFT JOIN warehouse w ON i.warehouse_id = w.id " +
+            "WHERE i.quantity < p.warning_threshold")
+    List<Map<String, Object>> findWarningList();
 }

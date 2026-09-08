@@ -7,22 +7,29 @@ const routes = [
     {
         path: '/',
         component: Layout,
-        redirect: '/inventory/stock',
+        redirect: '/dashboard',
         children: [
-            { path: 'inventory/stock', component: () => import('../views/inventory/Stock.vue') },
-            { path: 'warehouse', component: () => import('../views/warehouse/index.vue') },
-            { path: 'inventory/warehouse', component: () => import('../views/warehouse/index.vue') },
-            { path: 'product', component: () => import('@/views/product/index.vue') },
+            // ===== 数据看板 =====
+            { path: 'dashboard', component: () => import('@/views/Dashboard.vue') },
+
+            // ===== 库存管理 =====
             { path: 'inventory/stock', component: () => import('@/views/inventory/Stock.vue') },
+            { path: 'inventory/log', component: () => import('@/views/inventory/Log.vue') },
+
+            // ===== 入库管理 =====
             { path: 'inventory/inbound', component: () => import('@/views/inbound/index.vue') },
-// 入库创建（后续实现）
             { path: 'inventory/inbound/create', component: () => import('@/views/inbound/create.vue') },
-// 入库详情（后续实现）
             { path: 'inventory/inbound/detail/:id', component: () => import('@/views/inbound/detail.vue') },
-            // 出库管理
+
+            // ===== 出库管理 =====
             { path: 'inventory/outbound', component: () => import('@/views/outbound/index.vue') },
             { path: 'inventory/outbound/create', component: () => import('@/views/outbound/create.vue') },
             { path: 'inventory/outbound/detail/:id', component: () => import('@/views/outbound/detail.vue') },
+
+            // ===== 基础数据 =====
+            { path: 'warehouse', component: () => import('@/views/warehouse/index.vue') },
+            { path: 'product', component: () => import('@/views/product/index.vue') },
+            { path: 'category', component: () => import('@/views/category/index.vue') },
         ]
     }
 ];
@@ -32,6 +39,7 @@ const router = createRouter({
     routes
 });
 
+// 路由守卫
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('accessToken');
     if (to.path !== '/login' && !token) {
