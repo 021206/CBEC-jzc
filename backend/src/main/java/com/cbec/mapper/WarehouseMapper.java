@@ -32,4 +32,7 @@ public interface WarehouseMapper {
     // 查询所有启用的仓库（给下拉框用）
     @Select("SELECT * FROM warehouse WHERE status = 1 ORDER BY id ASC")
     List<Warehouse> selectAllEnabled();
+
+    @Select("SELECT COUNT(*) FROM warehouse")
+    Long countAll();
 }

@@ -40,4 +40,7 @@ public interface ProductMapper {
     // 查询所有启用商品（下拉框用）
     @Select("SELECT * FROM product WHERE status = 1 ORDER BY name ASC")
     List<Product> selectAllEnabled();
+
+    @Select("SELECT COUNT(*) FROM product")
+    Long countAll();
 }
