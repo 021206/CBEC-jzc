@@ -4,14 +4,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class SysUser {
+public class SysRole {
     private Long id;
-    private String username;
-    private String password;
-    private String nickname;
-    private Integer status;
-    private Long roleId;
     private String roleName;
+    private String roleCode;
+    private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
