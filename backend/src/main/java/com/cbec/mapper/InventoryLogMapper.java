@@ -5,15 +5,16 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Insert;
+
 
 import java.util.List;
 
 @Mapper
 public interface InventoryLogMapper {
 
-    @Select("INSERT INTO inventory_log(product_id, warehouse_id, order_no, change_type, change_qty, before_qty, after_qty, operator, remark) " +
+    @Insert("INSERT INTO inventory_log(product_id, warehouse_id, order_no, change_type, change_qty, before_qty, after_qty, operator, remark) " +
             "VALUES(#{productId}, #{warehouseId}, #{orderNo}, #{changeType}, #{changeQty}, #{beforeQty}, #{afterQty}, #{operator}, #{remark})")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(InventoryLog log);
 
     // ========== 分页查询（使用纯字符串 + 条件拼接） ==========

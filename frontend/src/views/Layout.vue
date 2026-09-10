@@ -10,15 +10,21 @@
           router
       >
         <template v-for="menu in menus" :key="menu.id">
-          <el-sub-menu v-if="menu.children && menu.children.length > 0" :index="menu.path">
+          <!-- 父菜单用 id 做 index，不参与跳转 -->
+          <el-sub-menu v-if="menu.children && menu.children.length > 0" :index="String(menu.id)">
             <template #title>
               <span>{{ menu.menuName }}</span>
             </template>
-            <el-menu-item v-for="child in menu.children" :key="child.id" :index="child.path">
+            <el-menu-item
+                v-for="child in menu.children"
+                :key="child.id"
+                :index="child.path || String(child.id)"
+            >
               {{ child.menuName }}
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item v-else :index="menu.path">
+          <!-- 无子菜单的顶级菜单直接用 path -->
+          <el-menu-item v-else :index="menu.path || String(menu.id)">
             <span>{{ menu.menuName }}</span>
           </el-menu-item>
         </template>
@@ -52,6 +58,7 @@ const loadMenus = async () => {
     const res = await getMenus();
     if (res.code === 200) {
       menus.value = res.data || [];
+      console.log('菜单数据:', JSON.stringify(menus.value, null, 2));
     }
   } catch (e) {
     console.error('加载菜单失败', e);

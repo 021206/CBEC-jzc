@@ -17,9 +17,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="180" />
-      <el-table-column label="操作" width="280" fixed="right">
+      <el-table-column label="操作" width="380" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" @click="openEditDialog(row)">编辑</el-button>
+          <el-button size="small" type="success" @click="openAssignDialog(row)">分配权限</el-button>
           <el-button size="small" :type="row.status === 1 ? 'warning' : 'success'" @click="handleToggleStatus(row)">
             {{ row.status === 1 ? '禁用' : '启用' }}
           </el-button>
@@ -46,18 +47,45 @@
         <el-button type="primary" @click="submitForm">确定</el-button>
       </template>
     </el-dialog>
+
+    <!-- 分配权限弹窗 -->
+    <el-dialog v-model="assignVisible" title="分配权限" width="500px">
+      <div style="margin-bottom: 10px; color: #909399; font-size: 13px;">
+        当前角色：<strong>{{ currentRoleName }}</strong>
+      </div>
+      <el-tree
+          ref="menuTreeRef"
+          :data="menuTree"
+          node-key="id"
+          show-checkbox
+          default-expand-all
+          :props="{ children: 'children', label: 'menuName' }"
+          style="max-height: 400px; overflow-y: auto; border: 1px solid #ebeef5; padding: 10px; border-radius: 4px;"
+      />
+      <template #footer>
+        <el-button @click="assignVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitAssign">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { getRoleList, addRole, updateRole, deleteRole, toggleRoleStatus } from '@/api/role.js';
+import { getRoleList, addRole, updateRole, deleteRole, toggleRoleStatus, getRoleMenus, assignMenus } from '@/api/role.js';
+import { getMenuTree } from '@/api/menu.js';
 
 const tableData = ref([]);
 const dialogVisible = ref(false);
 const dialogTitle = ref('');
 const form = reactive({ id: null, roleName: '', roleCode: '', status: 1 });
+
+const assignVisible = ref(false);
+const menuTree = ref([]);
+const menuTreeRef = ref(null);
+const currentRoleId = ref(null);
+const currentRoleName = ref('');
 
 const loadData = async () => {
   const res = await getRoleList();
@@ -120,6 +148,49 @@ const handleDelete = async (id) => {
     loadData();
   } else {
     ElMessage.error(res.msg || '删除失败');
+  }
+};
+
+const openAssignDialog = async (row) => {
+  currentRoleId.value = row.id;
+  currentRoleName.value = row.roleName;
+
+  const menuRes = await getMenuTree();
+  if (menuRes.code === 200) {
+    menuTree.value = menuRes.data || [];
+  }
+
+  const roleRes = await getRoleMenus(row.id);
+  const checkedIds = (roleRes.code === 200 && roleRes.data) ? roleRes.data : [];
+
+  assignVisible.value = true;
+
+  setTimeout(() => {
+    if (menuTreeRef.value) {
+      menuTreeRef.value.setCheckedKeys([], false);
+      checkedIds.forEach(id => {
+        const node = menuTreeRef.value.getNode(id);
+        if (node && node.isLeaf) {
+          menuTreeRef.value.setChecked(id, true, false);
+        }
+      });
+    }
+  }, 200);
+};
+
+const submitAssign = async () => {
+  if (!menuTreeRef.value) return;
+
+  const checkedKeys = menuTreeRef.value.getCheckedKeys();
+  const halfCheckedKeys = menuTreeRef.value.getHalfCheckedKeys();
+  const allKeys = [...checkedKeys, ...halfCheckedKeys];
+
+  const res = await assignMenus(currentRoleId.value, allKeys);
+  if (res.code === 200) {
+    ElMessage.success('权限分配成功');
+    assignVisible.value = false;
+  } else {
+    ElMessage.error(res.msg || '分配失败');
   }
 };
 

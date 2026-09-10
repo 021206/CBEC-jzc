@@ -1,6 +1,7 @@
 package com.cbec.entity.auth;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -11,11 +12,11 @@ public class SysMenu {
     private String path;
     private String component;
     private String perms;
-    private Integer menuType;  // 1、目录  2、菜单  3、按钮
+    private Integer menuType; // 1目录 2菜单 3按钮
     private String icon;
     private Integer sortOrder;
     private Integer status;
-
-    // 用于前端树形结构的子菜单列表（非数据库字段）
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     private List<SysMenu> children;
 }
