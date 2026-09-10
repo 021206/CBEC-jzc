@@ -26,9 +26,6 @@ public interface InventoryMapper {
     @Select("SELECT * FROM inventory WHERE product_id = #{productId}")
     Inventory findByProductId(@Param("productId") Long productId);
 
-    // 库存预警功能暂不实现
-    // @Select("SELECT ...")
-    // List<Map<String, Object>> findWarningList();
 
     @Select("SELECT * FROM inventory WHERE id = #{id}")
     Inventory selectById(@Param("id") Long id);
@@ -54,10 +51,12 @@ public interface InventoryMapper {
     int count(@Param("productId") Long productId,
               @Param("warehouseId") Long warehouseId);
 
-    @Select("SELECT i.product_id, p.name as productName, i.warehouse_id, w.name as warehouseName, i.quantity, p.warning_threshold " +
+    @Select("SELECT i.product_id as productId, p.name as productName, i.warehouse_id as warehouseId, " +
+            "w.name as warehouseName, i.quantity, p.warning_threshold as warningThreshold " +
             "FROM inventory i " +
             "LEFT JOIN product p ON i.product_id = p.id " +
             "LEFT JOIN warehouse w ON i.warehouse_id = w.id " +
-            "WHERE i.quantity < p.warning_threshold")
+            "WHERE i.quantity < p.warning_threshold " +
+            "ORDER BY i.quantity ASC")
     List<Map<String, Object>> findWarningList();
 }

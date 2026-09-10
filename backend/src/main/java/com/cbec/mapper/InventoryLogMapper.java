@@ -4,11 +4,11 @@ import com.cbec.entity.inventory.InventoryLog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Insert;
 
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface InventoryLogMapper {
@@ -50,4 +50,22 @@ public interface InventoryLogMapper {
 
     @Select("SELECT IFNULL(SUM(change_qty), 0) FROM inventory_log WHERE change_type = 2 AND DATE(create_time) = #{today}")
     Integer sumTodayOutbound(@Param("today") String today);
+
+    /**
+     * 近7天入库趋势（按日期分组）
+     */
+    @Select("SELECT DATE(create_time) as date, IFNULL(SUM(change_qty), 0) as total " +
+            "FROM inventory_log " +
+            "WHERE change_type = 1 AND create_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) " +
+            "GROUP BY DATE(create_time) ORDER BY date ASC")
+    List<Map<String, Object>> sumInboundTrend();
+
+    /**
+     * 近7天出库趋势（按日期分组）
+     */
+    @Select("SELECT DATE(create_time) as date, IFNULL(SUM(change_qty), 0) as total " +
+            "FROM inventory_log " +
+            "WHERE change_type = 2 AND create_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) " +
+            "GROUP BY DATE(create_time) ORDER BY date ASC")
+    List<Map<String, Object>> sumOutboundTrend();
 }
