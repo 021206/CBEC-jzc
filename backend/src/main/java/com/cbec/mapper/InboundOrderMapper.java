@@ -16,9 +16,15 @@ public interface InboundOrderMapper {
     @Update("UPDATE inbound_order SET status=#{status}, auditor=#{auditor}, audit_time=#{auditTime} WHERE id=#{id}")
     int updateStatus(InboundOrder order);
 
-    @Select("SELECT * FROM inbound_order WHERE id = #{id}")
-    InboundOrder selectById(@Param("id") Long id);
-
-    @Select("SELECT * FROM inbound_order ORDER BY id DESC")
+    @Select("SELECT i.*, w.name as warehouseName " +
+            "FROM inbound_order i " +
+            "LEFT JOIN warehouse w ON i.warehouse_id = w.id " +
+            "ORDER BY i.id ASC")
     List<InboundOrder> selectAll();
+
+    @Select("SELECT i.*, w.name as warehouseName " +
+            "FROM inbound_order i " +
+            "LEFT JOIN warehouse w ON i.warehouse_id = w.id " +
+            "WHERE i.id = #{id}")
+    InboundOrder selectById(@Param("id") Long id);
 }

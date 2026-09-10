@@ -69,10 +69,10 @@
 </template>
 
 <script setup>
-import {ref, onMounted, nextTick} from 'vue';
-import {ElMessage} from 'element-plus';
+import { ref, onMounted, nextTick } from 'vue';
+import { ElMessage } from 'element-plus';
 import * as echarts from 'echarts';
-import {getStatisticsOverview} from '@/api/statistics.js';
+import { getStatisticsOverview } from '@/api/statistics.js';
 
 const stats = ref({});
 const chartRef = ref(null);
@@ -108,12 +108,23 @@ const renderChart = () => {
   const outboundData = trendData.map(d => d.outbound);
 
   chartInstance.setOption({
-    tooltip: {trigger: 'axis'},
-    legend: {data: ['入库', '出库']},
-    grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+    tooltip: { trigger: 'axis' },
+    legend: {
+      data: ['入库', '出库'],
+      bottom: 0,          // 图例固定在底部
+      itemGap: 30         // 两个图例之间的间距
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '60px',     // 底部留出 60px 给图例
+      top: '40px',        // 顶部留点空间
+      containLabel: true
+    },
     xAxis: {
       type: 'category',
-      data: dates
+      data: dates,
+      boundaryGap: false  // 折线从 y 轴起点开始
     },
     yAxis: {
       type: 'value'

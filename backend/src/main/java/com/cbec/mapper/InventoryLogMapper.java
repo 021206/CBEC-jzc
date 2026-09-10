@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Insert;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -17,14 +16,14 @@ public interface InventoryLogMapper {
             "VALUES(#{productId}, #{warehouseId}, #{orderNo}, #{changeType}, #{changeQty}, #{beforeQty}, #{afterQty}, #{operator}, #{remark})")
     int insert(InventoryLog log);
 
-    // ========== 分页查询（使用纯字符串 + 条件拼接） ==========
+    // ========== 分页查询（按 ID 升序） ==========
     @Select("SELECT * FROM inventory_log " +
             "WHERE product_id = COALESCE(#{productId}, product_id) " +
             "AND warehouse_id = COALESCE(#{warehouseId}, warehouse_id) " +
             "AND change_type = COALESCE(#{changeType}, change_type) " +
             "AND (#{startTime} IS NULL OR create_time >= #{startTime}) " +
             "AND (#{endTime} IS NULL OR create_time <= #{endTime}) " +
-            "ORDER BY id DESC LIMIT #{offset}, #{limit}")
+            "ORDER BY id ASC LIMIT #{offset}, #{limit}")
     List<InventoryLog> selectPage(@Param("productId") Long productId,
                                   @Param("warehouseId") Long warehouseId,
                                   @Param("changeType") Integer changeType,

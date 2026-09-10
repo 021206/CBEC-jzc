@@ -5,7 +5,6 @@
       <el-button type="primary" @click="goToCreate">新建入库单</el-button>
     </div>
 
-    <!-- 搜索/筛选 -->
     <el-form :inline="true" :model="searchForm">
       <el-form-item label="状态">
         <el-select v-model="searchForm.status" placeholder="全部状态" clearable>
@@ -21,11 +20,10 @@
       </el-form-item>
     </el-form>
 
-    <!-- 表格 -->
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="orderNo" label="入库单号" width="180" />
-      <el-table-column prop="warehouseId" label="仓库ID" width="100" />
+      <el-table-column prop="warehouseName" label="仓库" />
       <el-table-column prop="supplier" label="供应商" />
       <el-table-column prop="status" label="状态" width="120">
         <template #default="{ row }">
@@ -39,19 +37,13 @@
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" @click="viewDetail(row.id)">查看</el-button>
-          <el-button
-              v-if="row.status === 1"
-              size="small"
-              type="warning"
-              @click="handleSubmit(row.id)"
-          >
+          <el-button v-if="row.status === 1" size="small" type="warning" @click="handleSubmit(row.id)">
             提交审核
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
     <el-pagination
         v-model:current-page="pageNum"
         v-model:page-size="pageSize"
@@ -66,21 +58,21 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
-import {ElMessage} from 'element-plus';
-import {getInboundOrderList, submitInboundAudit} from '@/api/inbound.js';
+import { ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { getInboundOrderList, submitInboundAudit } from '@/api/inbound.js';
 
 const router = useRouter();
 
 const statusMap = {
-  1: {label: '草稿', type: 'info'},
-  2: {label: '待审核', type: 'warning'},
-  3: {label: '已完成', type: 'success'},
-  4: {label: '驳回', type: 'danger'}
+  1: { label: '草稿', type: 'info' },
+  2: { label: '待审核', type: 'warning' },
+  3: { label: '已完成', type: 'success' },
+  4: { label: '驳回', type: 'danger' }
 };
 
-const searchForm = reactive({status: null});
+const searchForm = reactive({ status: null });
 const tableData = ref([]);
 const total = ref(0);
 const pageNum = ref(1);

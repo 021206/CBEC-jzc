@@ -26,17 +26,16 @@ public interface InventoryMapper {
     @Select("SELECT * FROM inventory WHERE product_id = #{productId}")
     Inventory findByProductId(@Param("productId") Long productId);
 
-
     @Select("SELECT * FROM inventory WHERE id = #{id}")
     Inventory selectById(@Param("id") Long id);
 
     /**
-     * 分页查询库存列表（支持按商品和仓库筛选）
+     * 分页查询库存列表（支持按商品和仓库筛选，按 ID 升序）
      */
     @Select("SELECT * FROM inventory " +
             "WHERE (#{productId} IS NULL OR product_id = #{productId}) " +
             "AND (#{warehouseId} IS NULL OR warehouse_id = #{warehouseId}) " +
-            "ORDER BY id DESC LIMIT #{offset}, #{limit}")
+            "ORDER BY id ASC LIMIT #{offset}, #{limit}")
     List<Inventory> selectPage(@Param("productId") Long productId,
                                @Param("warehouseId") Long warehouseId,
                                @Param("offset") int offset,

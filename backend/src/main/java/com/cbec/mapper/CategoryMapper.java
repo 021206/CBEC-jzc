@@ -21,10 +21,10 @@ public interface CategoryMapper {
     @Select("SELECT * FROM category WHERE id = #{id}")
     Category selectById(@Param("id") Long id);
 
-    @Select("SELECT * FROM category WHERE status = 1 ORDER BY sort_order ASC")
+    @Select("SELECT * FROM category WHERE status = 1 ORDER BY id ASC")
     List<Category> selectAllEnabled();
 
-    @Select("SELECT * FROM category ORDER BY sort_order ASC")
+    @Select("SELECT * FROM category ORDER BY id ASC")
     List<Category> selectAll();
 
     @Select("SELECT COUNT(*) FROM category WHERE parent_id = #{parentId}")

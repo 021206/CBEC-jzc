@@ -13,7 +13,7 @@
             {{ statusMap[detail.status]?.label || '未知' }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="仓库ID">{{ detail.warehouseId }}</el-descriptions-item>
+        <el-descriptions-item label="仓库">{{ detail.warehouseName }}</el-descriptions-item>
         <el-descriptions-item label="出库类型">
           {{ detail.outboundType === 1 ? '订单发货' : '调拨出库' }}
         </el-descriptions-item>
@@ -37,27 +37,9 @@
     </el-card>
 
     <div style="margin-top: 20px; display: flex; gap: 10px;">
-      <el-button
-          v-if="detail.status === 1"
-          type="warning"
-          @click="handleSubmit"
-      >
-        提交审核
-      </el-button>
-      <el-button
-          v-if="detail.status === 2"
-          type="success"
-          @click="handleApprove"
-      >
-        审核通过
-      </el-button>
-      <el-button
-          v-if="detail.status === 2"
-          type="danger"
-          @click="handleReject"
-      >
-        驳回
-      </el-button>
+      <el-button v-if="detail.status === 1" type="warning" @click="handleSubmit">提交审核</el-button>
+      <el-button v-if="detail.status === 2" type="success" @click="handleApprove">审核通过</el-button>
+      <el-button v-if="detail.status === 2" type="danger" @click="handleReject">驳回</el-button>
       <el-button @click="goBack">返回</el-button>
     </div>
   </div>

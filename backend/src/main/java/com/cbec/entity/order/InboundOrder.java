@@ -18,7 +18,6 @@ public class InboundOrder {
     private String createBy;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-
-    // 非数据库字段：明细列表
+    private String warehouseName;
     private List<InboundItem> items;
 }

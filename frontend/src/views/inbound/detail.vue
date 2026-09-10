@@ -2,7 +2,6 @@
   <div>
     <el-page-header @back="$router.back()" content="入库单详情" style="margin-bottom: 20px;" />
 
-    <!-- 基本信息 -->
     <el-card shadow="never" style="margin-bottom: 20px;">
       <template #header>
         <span style="font-weight: bold;">基本信息</span>
@@ -14,7 +13,7 @@
             {{ statusMap[detail.status]?.label || '未知' }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="仓库ID">{{ detail.warehouseId }}</el-descriptions-item>
+        <el-descriptions-item label="仓库">{{ detail.warehouseName }}</el-descriptions-item>
         <el-descriptions-item label="供应商">{{ detail.supplier || '-' }}</el-descriptions-item>
         <el-descriptions-item label="入库类型">
           {{ detail.inboundType === 1 ? '采购入库' : '退货入库' }}
@@ -27,7 +26,6 @@
       </el-descriptions>
     </el-card>
 
-    <!-- 明细列表 -->
     <el-card shadow="never">
       <template #header>
         <span style="font-weight: bold;">入库明细</span>
@@ -39,29 +37,10 @@
       </el-table>
     </el-card>
 
-    <!-- 操作按钮 -->
     <div style="margin-top: 20px; display: flex; gap: 10px;">
-      <el-button
-          v-if="detail.status === 1"
-          type="warning"
-          @click="handleSubmit"
-      >
-        提交审核
-      </el-button>
-      <el-button
-          v-if="detail.status === 2"
-          type="success"
-          @click="handleApprove"
-      >
-        审核通过
-      </el-button>
-      <el-button
-          v-if="detail.status === 2"
-          type="danger"
-          @click="handleReject"
-      >
-        驳回
-      </el-button>
+      <el-button v-if="detail.status === 1" type="warning" @click="handleSubmit">提交审核</el-button>
+      <el-button v-if="detail.status === 2" type="success" @click="handleApprove">审核通过</el-button>
+      <el-button v-if="detail.status === 2" type="danger" @click="handleReject">驳回</el-button>
       <el-button @click="goBack">返回</el-button>
     </div>
   </div>
@@ -131,6 +110,7 @@ const handleReject = async () => {
     if (e !== 'cancel') ElMessage.error('操作失败');
   }
 };
+
 const goBack = () => {
   router.push('/inventory/inbound');
 };
