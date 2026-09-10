@@ -5,7 +5,6 @@
       <el-button type="primary" @click="goToCreate">新建出库单</el-button>
     </div>
 
-    <!-- 搜索/筛选 -->
     <el-form :inline="true" :model="searchForm">
       <el-form-item label="状态">
         <el-select v-model="searchForm.status" placeholder="全部状态" clearable>
@@ -21,11 +20,10 @@
       </el-form-item>
     </el-form>
 
-    <!-- 表格 -->
     <el-table :data="tableData" border stripe style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="orderNo" label="出库单号" width="180" />
-      <el-table-column prop="warehouseId" label="仓库ID" width="100" />
+      <el-table-column prop="warehouseName" label="仓库" />
       <el-table-column prop="outboundType" label="出库类型" width="120">
         <template #default="{ row }">
           {{ row.outboundType === 1 ? '订单发货' : '调拨出库' }}
@@ -43,19 +41,13 @@
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" @click="viewDetail(row.id)">查看</el-button>
-          <el-button
-              v-if="row.status === 1"
-              size="small"
-              type="warning"
-              @click="handleSubmit(row.id)"
-          >
+          <el-button v-if="row.status === 1" size="small" type="warning" @click="handleSubmit(row.id)">
             提交审核
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
     <el-pagination
         v-model:current-page="pageNum"
         v-model:page-size="pageSize"

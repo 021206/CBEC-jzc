@@ -1,20 +1,19 @@
 package com.cbec.service;
 
 import com.cbec.entity.dto.StatisticsDTO;
+import com.cbec.mapper.InventoryLogMapper;
+import com.cbec.mapper.InventoryMapper;
 import com.cbec.mapper.ProductMapper;
 import com.cbec.mapper.WarehouseMapper;
-import com.cbec.mapper.InventoryMapper;
-import com.cbec.mapper.InventoryLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class StatisticsService {
@@ -42,10 +41,12 @@ public class StatisticsService {
 
         // 3. 今日入库总数
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        dto.setTodayInboundQty(inventoryLogMapper.sumTodayInbound(today));
+        Integer inboundToday = inventoryLogMapper.sumTodayInbound(today);
+        dto.setTodayInboundQty(inboundToday != null ? inboundToday : 0);
 
         // 4. 今日出库总数
-        dto.setTodayOutboundQty(inventoryLogMapper.sumTodayOutbound(today));
+        Integer outboundToday = inventoryLogMapper.sumTodayOutbound(today);
+        dto.setTodayOutboundQty(outboundToday != null ? outboundToday : 0);
 
         // 5. 近7天出入库趋势
         dto.setTrendData(getTrendData());
@@ -57,10 +58,46 @@ public class StatisticsService {
     }
 
     private List<Map<String, Object>> getTrendData() {
+        // 构造近7天的日期列表（格式 MM-dd）
+        List<String> last7Days = new ArrayList<>();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MM-dd");
+        for (int i = 6; i >= 0; i--) {
+            last7Days.add(LocalDate.now().minusDays(i).format(fmt));
+        }
+
+        // 查询数据库返回的入库、出库趋势
+        List<Map<String, Object>> inboundList = inventoryLogMapper.sumInboundTrend();
+        List<Map<String, Object>> outboundList = inventoryLogMapper.sumOutboundTrend();
+
+        // 转为 Map，方便按日期匹配
+        Map<String, Integer> inboundMap = new HashMap<>();
+        Map<String, Integer> outboundMap = new HashMap<>();
+
+        for (Map<String, Object> row : inboundList) {
+            String date = String.valueOf(row.get("date"));
+            if (date.length() >= 10) {
+                date = date.substring(5); // 截取 MM-dd
+            }
+            inboundMap.put(date, ((Number) row.get("total")).intValue());
+        }
+
+        for (Map<String, Object> row : outboundList) {
+            String date = String.valueOf(row.get("date"));
+            if (date.length() >= 10) {
+                date = date.substring(5);
+            }
+            outboundMap.put(date, ((Number) row.get("total")).intValue());
+        }
+
+        // 组装返回
         List<Map<String, Object>> result = new ArrayList<>();
-        // 实现近7天按日期统计入库/出库数量
-        // 需要编写 SQL 按日期分组查询 inventory_log
-        // 这里先返回空列表，后续完善
+        for (String day : last7Days) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("date", day);
+            item.put("inbound", inboundMap.getOrDefault(day, 0));
+            item.put("outbound", outboundMap.getOrDefault(day, 0));
+            result.add(item);
+        }
         return result;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface SysMenuMapper {
 
-    @Select("SELECT * FROM sys_menu ORDER BY sort_order ASC")
+    @Select("SELECT * FROM sys_menu ORDER BY id ASC")
     List<SysMenu> selectAll();
 
     @Select("SELECT * FROM sys_menu WHERE id = #{id}")

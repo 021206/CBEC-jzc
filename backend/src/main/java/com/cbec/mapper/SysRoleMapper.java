@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface SysRoleMapper {
 
-    @Select("SELECT * FROM sys_role ORDER BY id DESC")
+    @Select("SELECT * FROM sys_role ORDER BY id ASC")
     List<SysRole> selectAll();
 
     @Select("SELECT * FROM sys_role WHERE id = #{id}")

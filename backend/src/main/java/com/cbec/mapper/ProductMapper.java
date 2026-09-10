@@ -26,19 +26,23 @@ public interface ProductMapper {
     @Select("SELECT * FROM product WHERE sku_code = #{skuCode}")
     Product selectBySkuCode(@Param("skuCode") String skuCode);
 
-    // 分页查询（支持关键词搜索）
-    @Select("SELECT p.*, c.name as category_name FROM product p " +
+    // 分页查询（支持关键词搜索）—— 按 ID 升序
+    @Select("SELECT p.*, c.name as categoryName " +
+            "FROM product p " +
             "LEFT JOIN category c ON p.category_id = c.id " +
-            "WHERE p.name LIKE CONCAT('%', #{keyword}, '%') OR p.sku_code LIKE CONCAT('%', #{keyword}, '%') " +
-            "ORDER BY p.id DESC LIMIT #{offset}, #{limit}")
-    List<Product> selectPage(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+            "WHERE p.name LIKE CONCAT('%', #{keyword}, '%') " +
+            "OR p.sku_code LIKE CONCAT('%', #{keyword}, '%') " +
+            "ORDER BY p.id ASC LIMIT #{offset}, #{limit}")
+    List<Product> selectPage(@Param("keyword") String keyword,
+                             @Param("offset") int offset,
+                             @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) FROM product p " +
             "WHERE p.name LIKE CONCAT('%', #{keyword}, '%') OR p.sku_code LIKE CONCAT('%', #{keyword}, '%')")
     int count(@Param("keyword") String keyword);
 
-    // 查询所有启用商品（下拉框用）
-    @Select("SELECT * FROM product WHERE status = 1 ORDER BY name ASC")
+    // 查询所有启用商品（下拉框用）—— 按 ID 升序
+    @Select("SELECT * FROM product WHERE status = 1 ORDER BY id ASC")
     List<Product> selectAllEnabled();
 
     @Select("SELECT COUNT(*) FROM product")

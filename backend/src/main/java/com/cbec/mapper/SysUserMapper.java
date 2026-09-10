@@ -22,7 +22,7 @@ public interface SysUserMapper {
             "LEFT JOIN sys_role r ON u.role_id = r.id " +
             "WHERE u.username LIKE CONCAT('%', #{keyword}, '%') " +
             "OR u.nickname LIKE CONCAT('%', #{keyword}, '%') " +
-            "ORDER BY u.id DESC LIMIT #{offset}, #{limit}")
+            "ORDER BY u.id ASC LIMIT #{offset}, #{limit}")
     List<SysUser> selectPage(@Param("keyword") String keyword,
                              @Param("offset") int offset,
                              @Param("limit") int limit);
@@ -32,7 +32,7 @@ public interface SysUserMapper {
             "OR nickname LIKE CONCAT('%', #{keyword}, '%')")
     int count(@Param("keyword") String keyword);
 
-// 新增用户
+    // 新增用户
     @Insert("INSERT INTO sys_user(username, password, nickname, status, role_id) " +
             "VALUES(#{username}, #{password}, #{nickname}, #{status}, #{roleId})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
