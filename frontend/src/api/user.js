@@ -1,6 +1,5 @@
 import request from '../utils/request';
 
-// 分页查询
 export const getUserPage = (params) => {
     return request({
         url: '/sys/user/page',
@@ -9,7 +8,6 @@ export const getUserPage = (params) => {
     });
 };
 
-// 新增
 export const addUser = (data) => {
     return request({
         url: '/sys/user',
@@ -18,7 +16,6 @@ export const addUser = (data) => {
     });
 };
 
-// 编辑
 export const updateUser = (data) => {
     return request({
         url: '/sys/user',
@@ -27,7 +24,6 @@ export const updateUser = (data) => {
     });
 };
 
-// 切换状态
 export const toggleUserStatus = (id) => {
     return request({
         url: `/sys/user/status/${id}`,
@@ -35,7 +31,6 @@ export const toggleUserStatus = (id) => {
     });
 };
 
-// 重置密码
 export const resetUserPassword = (id) => {
     return request({
         url: `/sys/user/resetPwd/${id}`,
@@ -43,7 +38,6 @@ export const resetUserPassword = (id) => {
     });
 };
 
-// 删除
 export const deleteUser = (id) => {
     return request({
         url: `/sys/user/${id}`,
@@ -51,7 +45,6 @@ export const deleteUser = (id) => {
     });
 };
 
-// 查询详情
 export const getUserById = (id) => {
     return request({
         url: `/sys/user/${id}`,

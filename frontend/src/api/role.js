@@ -8,7 +8,7 @@ export const getRoleList = () => {
     });
 };
 
-// 新增
+// 新增角色
 export const addRole = (data) => {
     return request({
         url: '/sys/role',
@@ -17,7 +17,7 @@ export const addRole = (data) => {
     });
 };
 
-// 编辑
+// 编辑角色
 export const updateRole = (data) => {
     return request({
         url: '/sys/role',
@@ -26,7 +26,7 @@ export const updateRole = (data) => {
     });
 };
 
-// 删除
+// 删除角色
 export const deleteRole = (id) => {
     return request({
         url: `/sys/role/${id}`,
@@ -42,10 +42,27 @@ export const toggleRoleStatus = (id) => {
     });
 };
 
-// 查询详情
+// 查询角色详情
 export const getRoleById = (id) => {
     return request({
         url: `/sys/role/${id}`,
         method: 'get'
+    });
+};
+
+// 查询角色已分配的菜单ID
+export const getRoleMenus = (roleId) => {
+    return request({
+        url: `/sys/role/menus/${roleId}`,
+        method: 'get'
+    });
+};
+
+// 给角色分配菜单权限
+export const assignMenus = (roleId, menuIds) => {
+    return request({
+        url: '/sys/role/assignMenus',
+        method: 'post',
+        data: { roleId, menuIds }
     });
 };

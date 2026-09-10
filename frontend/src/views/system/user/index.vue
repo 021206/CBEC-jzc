@@ -5,7 +5,6 @@
       <el-button type="primary" @click="openAddDialog">新增用户</el-button>
     </div>
 
-    <!-- 搜索 -->
     <el-form :inline="true" :model="searchForm" style="margin-bottom: 20px;">
       <el-form-item label="关键词">
         <el-input v-model="searchForm.keyword" placeholder="用户名/昵称" clearable />
@@ -16,7 +15,6 @@
       </el-form-item>
     </el-form>
 
-    <!-- 表格 -->
     <el-table :data="tableData" border stripe>
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="username" label="用户名" />
@@ -42,7 +40,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
     <el-pagination
         v-model:current-page="pageNum"
         v-model:page-size="pageSize"
@@ -54,7 +51,6 @@
         style="margin-top: 20px; justify-content: flex-end;"
     />
 
-    <!-- 新增/编辑弹窗 -->
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
       <el-form :model="form" label-width="80px">
         <el-form-item label="用户名" required>
@@ -188,7 +184,7 @@ const handleResetPwd = async (id) => {
 };
 
 const handleDelete = async (id) => {
-  await ElMessageBox.confirm('确认删除该用户？', '提示', { type: 'warning' });
+  await ElMessageBox.confirm('确认删除该用户？', '提示', {type: 'warning'});
   const res = await deleteUser(id);
   if (res.code === 200) {
     ElMessage.success('删除成功');

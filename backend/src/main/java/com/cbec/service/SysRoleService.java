@@ -5,6 +5,8 @@ import com.cbec.entity.auth.SysRole;
 import com.cbec.mapper.SysRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.cbec.mapper.SysRoleMenuMapper;
 
 import java.util.List;
 
@@ -65,5 +67,28 @@ public class SysRoleService {
         }
         role.setStatus(role.getStatus() == 1 ? 0 : 1);
         sysRoleMapper.update(role);
+    }
+
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
+
+    /**
+     * 查询角色已分配的菜单ID列表
+     */
+    public List<Long> getRoleMenuIds(Long roleId) {
+        return sysRoleMenuMapper.selectMenuIdsByRoleId(roleId);
+    }
+
+    /**
+     * 给角色分配菜单权限
+     */
+    @Transactional
+    public void assignMenus(Long roleId, List<Long> menuIds) {
+        // 先删除旧关联
+        sysRoleMenuMapper.deleteByRoleId(roleId);
+        // 再插入新关联（如果 menuIds 不为空）
+        if (menuIds != null && !menuIds.isEmpty()) {
+            sysRoleMenuMapper.batchInsert(roleId, menuIds);
+        }
     }
 }
