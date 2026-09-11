@@ -1,6 +1,7 @@
 package com.cbec.controller;
 
 import com.cbec.common.Result;
+import com.cbec.common.annotation.RequiresPermission;
 import com.cbec.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ public class InventoryLogController {
     @Autowired
     private InventoryService inventoryService;
 
+    @RequiresPermission("inventory:log")
     @GetMapping("/page")
     public Result<Map<String, Object>> page(
             @RequestParam(required = false) Long productId,

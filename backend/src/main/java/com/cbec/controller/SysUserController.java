@@ -1,6 +1,7 @@
 package com.cbec.controller;
 
 import com.cbec.common.Result;
+import com.cbec.common.annotation.RequiresPermission;
 import com.cbec.common.exception.BusinessException;
 import com.cbec.entity.auth.SysUser;
 import com.cbec.service.SysUserService;
@@ -19,6 +20,7 @@ public class SysUserController {
     /**
      * 分页查询用户
      */
+    @RequiresPermission("user:list")
     @GetMapping("/page")
     public Result<Map<String, Object>> page(
             @RequestParam(required = false) String keyword,
@@ -30,6 +32,7 @@ public class SysUserController {
     /**
      * 新增用户
      */
+    @RequiresPermission("user:add")
     @PostMapping
     public Result<SysUser> add(@RequestBody SysUser user) {
         return Result.success(sysUserService.add(user));
@@ -38,6 +41,7 @@ public class SysUserController {
     /**
      * 编辑用户
      */
+    @RequiresPermission("user:edit")
     @PutMapping
     public Result<SysUser> update(@RequestBody SysUser user) {
         if (user.getId() == null) {
@@ -49,6 +53,7 @@ public class SysUserController {
     /**
      * 切换状态
      */
+    @RequiresPermission("user:edit")
     @PutMapping("/status/{id}")
     public Result<Void> toggleStatus(@PathVariable Long id) {
         sysUserService.toggleStatus(id);
@@ -58,6 +63,7 @@ public class SysUserController {
     /**
      * 重置密码
      */
+    @RequiresPermission("user:resetPwd")
     @PutMapping("/resetPwd/{id}")
     public Result<Void> resetPassword(@PathVariable Long id) {
         sysUserService.resetPassword(id);
@@ -67,6 +73,7 @@ public class SysUserController {
     /**
      * 删除用户
      */
+    @RequiresPermission("user:delete")
     @DeleteMapping("/{id}")
     public Result<Void> delete(@PathVariable Long id) {
         sysUserService.delete(id);
@@ -76,6 +83,7 @@ public class SysUserController {
     /**
      * 查询用户详情
      */
+    @RequiresPermission("user:list")
     @GetMapping("/{id}")
     public Result<SysUser> getById(@PathVariable Long id) {
         return Result.success(sysUserService.getById(id));
