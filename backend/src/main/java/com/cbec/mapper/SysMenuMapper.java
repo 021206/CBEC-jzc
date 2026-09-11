@@ -34,8 +34,8 @@ public interface SysMenuMapper {
     // 查询用户拥有的菜单权限（用于动态菜单）
     @Select("SELECT DISTINCT m.* FROM sys_menu m " +
             "LEFT JOIN sys_role_menu rm ON m.id = rm.menu_id " +
-            "LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id " +
-            "WHERE ur.user_id = #{userId} AND m.status = 1 " +
+            "LEFT JOIN sys_user u ON rm.role_id = u.role_id " +
+            "WHERE u.id = #{userId} AND m.status = 1 " +
             "ORDER BY m.sort_order ASC")
     List<SysMenu> selectMenusByUserId(@Param("userId") Long userId);
 

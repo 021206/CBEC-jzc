@@ -22,6 +22,7 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { login } from '../api/auth';
+import request from '../utils/request';
 
 const router = useRouter();
 const form = reactive({ username: 'admin', password: '021206' });
@@ -37,6 +38,21 @@ const handleLogin = async () => {
       console.log('登录成功，返回数据:', res.data);
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
+
+      // ===== 新增：获取当前用户的权限列表 =====
+      try {
+        const permRes = await request({ url: '/auth/perms', method: 'get' });
+        if (permRes.code === 200) {
+          // 超级管理员返回 null，普通用户返回数组
+          localStorage.setItem('perms', JSON.stringify(permRes.data));
+          console.log('权限列表:', permRes.data);
+        }
+      } catch (e) {
+        console.error('获取权限失败', e);
+        localStorage.setItem('perms', JSON.stringify([]));
+      }
+      // ===== 新增结束 =====
+
       ElMessage.success('登录成功');
       router.push('/');
     } else {
