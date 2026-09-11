@@ -2,6 +2,8 @@ package com.cbec.mapper;
 
 import com.cbec.entity.auth.SysMenu;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -36,4 +38,16 @@ public interface SysMenuMapper {
             "WHERE ur.user_id = #{userId} AND m.status = 1 " +
             "ORDER BY m.sort_order ASC")
     List<SysMenu> selectMenusByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据菜单ID列表查询所有权限标识
+     */
+    @Select("<script>" +
+            "SELECT perms FROM sys_menu WHERE id IN " +
+            "<foreach collection='menuIds' item='id' open='(' separator=',' close=')'>" +
+            "#{id}" +
+            "</foreach>" +
+            " AND perms IS NOT NULL AND perms != ''" +
+            "</script>")
+    List<String> selectPermsByMenuIds(@Param("menuIds") List<Long> menuIds);
 }

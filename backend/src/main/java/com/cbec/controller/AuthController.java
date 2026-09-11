@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import com.cbec.service.PermissionService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class AuthController {
@@ -87,6 +89,17 @@ public class AuthController {
         List<SysMenu> menuTree = sysMenuService.getMenuTreeByUserId(userId);
 
         return Result.success(menuTree);
+    }
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @GetMapping("/auth/perms")
+    public Result<Set<String>> getPerms(@RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        Long userId = jwtUtils.getUserIdFromToken(token);
+        Set<String> perms = permissionService.getUserPermissions(userId);
+        return Result.success(perms); // 超级管理员返回 null，前端需特殊处理
     }
 }
 
