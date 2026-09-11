@@ -16,7 +16,7 @@ public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
 
-    @RequiresPermission("inventory:list")
+    @RequiresPermission("stock:list")
     @GetMapping("/{productId}/{warehouseId}")
     public Result<Inventory> getByProductAndWarehouse(
             @PathVariable Long productId,
@@ -24,7 +24,7 @@ public class InventoryController {
         return Result.success(inventoryService.getByProductAndWarehouse(productId, warehouseId));
     }
 
-    @RequiresPermission("inventory:list")
+    @RequiresPermission("stock:list")
     @GetMapping("/list")
     public Result<Map<String, Object>> list(
             @RequestParam(required = false) Long productId,

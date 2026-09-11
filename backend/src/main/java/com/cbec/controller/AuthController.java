@@ -93,7 +93,6 @@ public class AuthController {
 
     @Autowired
     private PermissionService permissionService;
-
     @GetMapping("/auth/perms")
     public Result<Set<String>> getPerms(@RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
